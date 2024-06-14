@@ -4,6 +4,7 @@
 \alias{aux_mat}
 \alias{single_dists}
 \alias{single_dists_tr}
+\alias{mult_dists}
 \alias{pred_cdist}
 \alias{get_grid_list}
 \alias{dist_from_grids}
@@ -14,6 +15,8 @@
 single_dists(mat_list)
 
 single_dists_tr(mat_list, tr_vec, tr_inp)
+
+mult_dists(mat_list1, mat_list2, return_single)
 
 pred_cdist(mat_list, pred_mat)
 
@@ -32,6 +35,12 @@ mult_dist_from_grids(y_grid, x_grid, by)
 
 \item{tr_inp}{truncation input}
 
+\item{mat_list1}{internal use}
+
+\item{mat_list2}{internal use}
+
+\item{return_single}{internal use}
+
 \item{pred_mat}{internal use}
 
 \item{x_to_list}{internal use}
@@ -41,16 +50,6 @@ mult_dist_from_grids(y_grid, x_grid, by)
 \item{y_grid}{internal use}
 
 \item{x_grid}{internal use}
-
-\item{mat_list1}{internal use}
-
-\item{mat_list2}{internal use}
-
-\item{x}{internal use}
-
-\item{y}{internal use}
-
-\item{return_single}{internal use}
 }
 \description{
 Internal use only

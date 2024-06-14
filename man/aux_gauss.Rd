@@ -7,21 +7,21 @@
 aux_gauss(dist, sigsq, phi)
 }
 \arguments{
+\item{dist}{a numeric matrix representing the distance between spatial
+entities.}
+
 \item{sigsq}{the \eqn{\sigma^2} parameter from the Gaussian covariance
 function.}
 
 \item{phi}{the \eqn{\phi} parameter from the Gaussian covariance function,
 controls the range of the spatial dependence.}
-
-\item{dists}{a numeric matrix representing the distance between spatial
-entities.}
 }
 \value{
 The mean of \code{gauss_cov(dist, sigsq, phi)}.
 }
 \description{
-This is an auxilliary function for internal use. It helps to
+This is an auxiliary function for internal use. It helps to
 numerically integrate a covariance function evaluated at a grid of points
-within a polyigon and speed-up the computations.
+within a polygon and speed-up the computations.
 }
 \keyword{internal}

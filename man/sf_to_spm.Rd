@@ -39,7 +39,7 @@ generated. The options are \code{c("random", "regular",
     "hexagonal")}. For more details, see \code{st_sample} in the \code{sf}
 package.}
 
-\item{by_polygon}{a \code{logical} indicating wheter we should generate
+\item{by_polygon}{a \code{logical} indicating whether we should generate
 \code{n_pts} by polygon or for the \code{n_pts} for the whole study
 region.}
 
@@ -69,5 +69,4 @@ msoa_spm <- sf_to_spm(sf_obj = liv_msoa, n_pts = 1000,
                       type = "regular", by_polygon = FALSE,
                       poly_ids = "msoa11cd",
                       var_ids = "leb_est")
-
 }

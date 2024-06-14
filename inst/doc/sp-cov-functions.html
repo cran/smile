@@ -14,20 +14,56 @@
 
 <title>5. Spatial covariance functions</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 
 
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -225,41 +261,80 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p>In this short vignette, we illustrate the family of spatial covariance functions implemented in this package. Note that, all of them are based on the assumptions of stationarity and isotropy of the underlying Gaussian random field (GRF). Also, the implementations (and definitions) are based on the families of spatial <em>correlation</em> functions presented in <span class="citation">Diggle and Ribeiro (2007)</span>. The implementations make use of the <code>RcppArmadillo</code> <span class="citation">(Eddelbuettel and Sanderson 2014)</span> package and the STL library algorithms (C++ 11)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
-<p>The first spatial covariance family implemented is the so-called Matérn Covariance function, which is defined as <span class="math display">\[
+<p>In this short vignette, we illustrate the family of spatial
+covariance functions implemented in this package. Note that, all of them
+are based on the assumptions of stationarity and isotropy of the
+underlying Gaussian random field (GRF). Also, the implementations (and
+definitions) are based on the families of spatial <em>correlation</em>
+functions presented in <span class="citation">Diggle and Ribeiro
+(2007)</span>. The implementations make use of the
+<code>RcppArmadillo</code> <span class="citation">(Eddelbuettel and
+Sanderson 2014)</span> package and the STL library algorithms (C++ 11)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>The first spatial covariance family implemented is the so-called
+Matérn Covariance function, which is defined as <span class="math display">\[
 {\rm C}(h; \sigma^2, \phi, \kappa) = \sigma^2 \frac{(h / \phi)^{\kappa}
 K_{\kappa}( h / \phi )} { 2^{\kappa - 1} \Gamma(\kappa) }.
-\]</span> Where <span class="math inline">\(h\)</span> is the distance between two points, <span class="math inline">\(\sigma^2\)</span> is a variance parameter, <span class="math inline">\(\phi\)</span> is the scale parameter that controls the reach of the spatial dependence, and <span class="math inline">\(\kappa\)</span> is a shape parameter that controls the smoothness of the process. The function <span class="math inline">\(K_{\kappa}(\cdot)\)</span> is the <span class="math inline">\(\kappa\)</span>-order Modified Bessel function of Second-Kind. There are special cases of the Matérn family implemented on the package, when setting <span class="math inline">\(\kappa\)</span> to <span class="math inline">\(1/2\)</span>, <span class="math inline">\(3/2\)</span>, <span class="math inline">\(5/2\)</span>, or <span class="math inline">\(\to \infty\)</span> the expression simplifies. The first and the last cases yield to the Exponential and Gaussian family, respectively.</p>
-<p>The second spatial covariance family implemented is the Powered Exponential Covariance function, it is defined as <span class="math display">\[
-{\rm C}(h; \sigma^2, \phi, \kappa) = \sigma^2 \exp \{ - (h / \phi)^{\kappa} \},
-\]</span> where <span class="math inline">\(h\)</span> is the distance between two points, <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span>, and <span class="math inline">\(\kappa\)</span> analogous to the Matérn function.</p>
-<p>The penultimate option is the Gaussian family of covariance functions. The expression associated with this family is written as <span class="math display">\[
-{\rm C}(h; \sigma^2, \phi) = \sigma^2 \exp \left\{ - \frac{h ^ 2}{2 \phi ^ 2} \right\},
-\]</span> again, the parameters are analogous to what have defined before in this vignette.</p>
-<p>Lastly, we have implemented the Spherical family of covariance functions, defined as <span class="math display">\[
-{\rm C}(h; \sigma^2, \phi) = 
-\sigma^2 
+\]</span> Where <span class="math inline">\(h\)</span> is the distance
+between two points, <span class="math inline">\(\sigma^2\)</span> is a
+variance parameter, <span class="math inline">\(\phi\)</span> is the
+scale parameter that controls the reach of the spatial dependence, and
+<span class="math inline">\(\kappa\)</span> is a shape parameter that
+controls the smoothness of the process. The function <span class="math inline">\(K_{\kappa}(\cdot)\)</span> is the <span class="math inline">\(\kappa\)</span>-order Modified Bessel function of
+Second-Kind. There are special cases of the Matérn family implemented on
+the package, when setting <span class="math inline">\(\kappa\)</span> to
+<span class="math inline">\(1/2\)</span>, <span class="math inline">\(3/2\)</span>, <span class="math inline">\(5/2\)</span>, or <span class="math inline">\(\to
+\infty\)</span> the expression simplifies. The first and the last cases
+yield to the Exponential and Gaussian family, respectively.</p>
+<p>The second spatial covariance family implemented is the Powered
+Exponential Covariance function, it is defined as <span class="math display">\[
+{\rm C}(h; \sigma^2, \phi, \kappa) = \sigma^2 \exp \{ - (h /
+\phi)^{\kappa} \},
+\]</span> where <span class="math inline">\(h\)</span> is the distance
+between two points, <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\phi\)</span>, and <span class="math inline">\(\kappa\)</span> analogous to the Matérn
+function.</p>
+<p>The penultimate option is the Gaussian family of covariance
+functions. The expression associated with this family is written as
+<span class="math display">\[
+{\rm C}(h; \sigma^2, \phi) = \sigma^2 \exp \left\{ - \frac{h ^ 2}{2 \phi
+^ 2} \right\},
+\]</span> again, the parameters are analogous to what have defined
+before in this vignette.</p>
+<p>Lastly, we have implemented the Spherical family of covariance
+functions, defined as <span class="math display">\[
+{\rm C}(h; \sigma^2, \phi) =
+\sigma^2
 \begin{cases}
 1 - \frac{3}{2} (h / \phi) + \frac{1}{2} (h / \phi) ^ 3 &amp; , \,
 0 \leq h \leq \phi \\
 0 &amp; , \, h &gt; \phi,
 \end{cases}
-\]</span> where, again, <span class="math inline">\(\sigma^2\)</span> is a variance parameter, while <span class="math inline">\(\phi &gt; 0\)</span> is a parameter with the same magnitude as the distances on which the function is being evaluated at and controls the speed of decay of the spatial covariances as we increase the distance between two points.</p>
+\]</span> where, again, <span class="math inline">\(\sigma^2\)</span> is
+a variance parameter, while <span class="math inline">\(\phi &gt;
+0\)</span> is a parameter with the same magnitude as the distances on
+which the function is being evaluated at and controls the speed of decay
+of the spatial covariances as we increase the distance between two
+points.</p>
 <div id="reference" class="section level1 unnumbered">
-<h1>Reference</h1>
-<div id="refs" class="references">
-<div id="ref-diggle2007model">
-<p>Diggle, PJ, and Paulo Justiniano Ribeiro. 2007. “Model-Based Geostatistics (Springer Series in Statistics).” In, 51–56. Springer.</p>
+<h1 class="unnumbered">Reference</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-diggle2007model" class="csl-entry">
+Diggle, PJ, and Paulo Justiniano Ribeiro. 2007. <span>“Model-Based
+Geostatistics (Springer Series in Statistics).”</span> In, 51–56.
+Springer.
 </div>
-<div id="ref-eddelbuettel2014rcpparmadillo">
-<p>Eddelbuettel, Dirk, and Conrad Sanderson. 2014. “RcppArmadillo: Accelerating R with High-Performance C++ Linear Algebra.” <em>Computational Statistics &amp; Data Analysis</em> 71: 1054–63.</p>
+<div id="ref-eddelbuettel2014rcpparmadillo" class="csl-entry">
+Eddelbuettel, Dirk, and Conrad Sanderson. 2014. <span>“RcppArmadillo:
+Accelerating r with High-Performance c++ Linear Algebra.”</span>
+<em>Computational Statistics &amp; Data Analysis</em> 71: 1054–63.
 </div>
 </div>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>for this problem, the implementation using the sequencial algorithms of the STL library was more effitient than those using the <code>RcppParallel</code> package<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>for this problem, the implementation using the
+sequential algorithms of the STL library was more efficient than those
+using the <code>RcppParallel</code> package<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

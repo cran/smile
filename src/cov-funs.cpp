@@ -5,18 +5,8 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// [[Rcpp::plugins(cpp11)]]
 using namespace Rcpp;
 
-//' @title Mean of a matrix (Internal use)
-//'
-//' @description This is an auxilliary function for internal use. It helps to
-//'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon.
-//'
-//' @param mat_aux a numeric matrix.
-//' @return The mean of \code{mat_aux}.
-//' @keywords internal
 double mean_mat(arma::mat mat_aux) {
   return std::accumulate(mat_aux.begin(), mat_aux.end(), 0.0) /
     (mat_aux.n_rows * mat_aux.n_cols);
@@ -25,7 +15,7 @@ double mean_mat(arma::mat mat_aux) {
 //' @title Matern covariance function (scalar - generic)
 //'
 //' @description Computing the Matern covariance function for a single distance
-//'   measure, addapted from \code{geoR}.
+//'   measure, adapted from \code{geoR}.
 //'
 //' @param d a scalar representing the distance on which it is desired to
 //'   evaluate the covariance function.
@@ -207,11 +197,11 @@ arma::mat mat_cov(const arma::mat& dists, double sigsq,
 
 //' @title Mean of a (Matern) covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} parameter from the Matern covariance
 //'   function.
@@ -234,7 +224,7 @@ double aux_matern(arma::mat dist, double sigsq,
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of
@@ -341,11 +331,11 @@ arma::mat pexp_cov(const arma::mat& dists, double sigsq,
 
 //' @title Mean of a (Powered Exponential) covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} parameter from the Powered Exponential
 //'   covariance function.
@@ -370,7 +360,7 @@ double aux_pexp(arma::mat dist, double sigsq,
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of
@@ -472,11 +462,11 @@ arma::mat gauss_cov(const arma::mat& dists, double sigsq, double phi) {
 
 //' @title Mean of a (Gaussian) covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} parameter from the Gaussian covariance
 //'   function.
@@ -497,7 +487,7 @@ double aux_gauss(arma::mat dist, double sigsq, double phi) {
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of
@@ -598,11 +588,11 @@ arma::mat spher_cov(const arma::mat& dists, double sigsq, double phi) {
 
 //' @title Mean of a (Spherical) covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} parameter from the Spherical covariance.
 //'   function.
@@ -623,7 +613,7 @@ double aux_spher(arma::mat dist, double sigsq, double phi) {
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of
@@ -725,11 +715,11 @@ arma::mat cs_cov(const arma::mat& dists, double sigsq, double phi) {
 
 //' @title Mean of a (Cubic spline) covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} parameter from the Spherical covariance.
 //'   function.
@@ -750,7 +740,7 @@ double aux_cs(arma::mat dist, double sigsq, double phi) {
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of
@@ -1003,11 +993,11 @@ arma::mat gw_cov(const arma::mat& dists, double sigsq,
 
 //' @title Mean of a Generalized Wendland covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} variance of the covariance function
 //'   function.
@@ -1027,7 +1017,7 @@ double aux_gw(arma::mat dist, double sigsq, double phi, int kappa, double mu) {
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of
@@ -1068,10 +1058,10 @@ arma::mat comp_gw_cov(const List& cross_dists, int n,
   return out;
 }
 
-//' @title Matern (tappered) covariance function (scalar - generic)
+//' @title Matern (tapered) covariance function (scalar - generic)
 //'
 //' @description Computing the Matern covariance function for a single distance
-//'   measure, addapted from \code{geoR} using Wendland-1 as a tapper.
+//'   measure, adapted from \code{geoR} using Wendland-1 as a tapper.
 //'
 //' @param d a scalar representing the distance on which it is desired to
 //'   evaluate the covariance function.
@@ -1084,7 +1074,7 @@ arma::mat comp_gw_cov(const List& cross_dists, int n,
 //'
 //' @param theta the \eqn{\theta} tapper range.
 //'
-//' @return a scalar representing the (tappered matern) covariance between two
+//' @return a scalar representing the (tapered matern) covariance between two
 //'   observations \code{d} apart of each other.
 //' 
 //' @seealso \code{\link{single_matern}}, \code{\link{single_matern5}}
@@ -1100,7 +1090,7 @@ double single_tapmat(double d, double sigsq,
   return out;
 }
 
-//' @title Tappered Matern covariance function (scalar - nu = 1/2)
+//' @title tapered Matern covariance function (scalar - nu = 1/2)
 //'
 //' @description Computing the Matern covariance function for a single distance
 //'   measure, with \eqn{\nu = 1/2}.
@@ -1113,7 +1103,7 @@ double single_tapmat(double d, double sigsq,
 //'   controls the range of the spatial dependence.
 //' @param theta \eqn{\theta} taper range.
 //'
-//' @return a scalar representing the (tappered matern) covariance between two
+//' @return a scalar representing the (tapered matern) covariance between two
 //'   observations \code{d} apart of each other.
 //' 
 //' @seealso \code{\link{single_matern}}, \code{\link{single_matern5}}
@@ -1128,7 +1118,7 @@ double single_tapmat1(double d, double sigsq,
   return out;
 }
 
-//' @title Tappered Matern covariance function (scalar - nu = 3/2)
+//' @title Tapered Matern covariance function (scalar - nu = 3/2)
 //'
 //' @description Computing the Matern covariance function for a single distance
 //'   measure, with \eqn{\nu = 3/2}.
@@ -1141,7 +1131,7 @@ double single_tapmat1(double d, double sigsq,
 //'   controls the range of the spatial dependence.
 //' @param theta \eqn{\theta} taper range.
 //'
-//' @return a scalar representing the (tappered matern) covariance between two
+//' @return a scalar representing the (tapered matern) covariance between two
 //'   observations \code{d} apart of each other.
 //' 
 //' @seealso \code{\link{single_matern}}, \code{\link{single_matern5}}
@@ -1156,9 +1146,9 @@ double single_tapmat3(double d, double sigsq,
   return out;
 }
 
-//' @title Tappered Matern covariance function for a given distance matrix.
+//' @title Tapered Matern covariance function for a given distance matrix.
 //'
-//' @description Computing the tappered Matern covariance function for a matrix
+//' @description Computing the tapered Matern covariance function for a matrix
 //'   of
 //'   distances.
 //'
@@ -1170,7 +1160,7 @@ double single_tapmat3(double d, double sigsq,
 //' @param nu smoothness parameter
 //' @param theta \eqn{\theta} taper range.
 //' 
-//' @return The tappered matern covariance function (for a stationary and isotropic
+//' @return The tapered matern covariance function (for a stationary and isotropic
 //'   process) associated with the provided distances (\code{dists}) and the
 //'   given set of parameters.
 //' 
@@ -1201,17 +1191,17 @@ arma::mat tapmat_cov(const arma::mat& dists, double sigsq,
 
 //' @title Mean of a (Matern - Wendland-1 tapper) covariance function (Internal use)
 //'
-//' @description This is an auxilliary function for internal use. It helps to
+//' @description This is an auxiliary function for internal use. It helps to
 //'   numerically integrate a covariance function evaluated at a grid of points
-//'   within a polyigon and speed-up the computations.
+//'   within a polygon and speed-up the computations.
 //'
-//' @param dists a numeric matrix representing the distance between spatial
+//' @param dist a numeric matrix representing the distance between spatial
 //'   entities.
 //' @param sigsq the \eqn{\sigma^2} parameter from the Matern covariance
 //'   function.
 //' @param phi the \eqn{\phi} parameter from the Matern covariance function,
-//' @param nu
-//' @param theta
+//' @param nu smoothness parameter
+//' @param theta the \eqn{\theta} tapper range.
 //' @return The mean of \code{mat_cov(dist, sigsq, phi, nu)}.
 //' @keywords internal
 // [[Rcpp::export]]
@@ -1227,7 +1217,7 @@ double aux_tapmat(arma::mat dist, double sigsq,
 //'
 //' @param cross_dists a \code{list} such that each position contains the cross
 //'   distances between points within different polygons.
-//' @param n an ingeger representing number of polygons (note that, this is
+//' @param n an integer representing number of polygons (note that, this is
 //'   different than the size of the list \code{cross_dists}
 //' @param n2 usually, equal to \code{n}, except when the function is being used
 //'   to calculate the "cross" covariance between two different partitions of

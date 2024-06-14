@@ -6,14 +6,14 @@ fit_spm <- function(x, ...) UseMethod("fit_spm")
 ##'
 ##' @title Fitting an underlying continuous process to areal data
 ##' 
-##' @details This function uses the \code{optim} function optimization
+##' @details This function uses the [stats::optim] function optimization
 ##'     algorithms to find the Maximum Likelihood estimators, and their standard
 ##'     errors, from a model adapted from. The function allows the user to input
-##'     the control parameters from the {optim} function through the argument
+##'     the control parameters from the [stats::optim] function through the argument
 ##'     \code{control_opt}, which is a named list. Additionally, the one can
 ##'     input lower and upper boundaries for the optimization problem, as well
 ##'     as the preferred optimization algorithm (as long as it is available for
-##'     \code{optim}). The preferred algorithm is selected by the argument
+##'     [stats::optim]). The preferred algorithm is selected by the argument
 ##'     \code{opt_method}. In addition to the control of the optimization, the
 ##'     user can select a covariance function among the following: Matern,
 ##'     Exponential, Powered Exponential, Gaussian, and Spherical. The parameter
@@ -37,23 +37,23 @@ fit_spm <- function(x, ...) UseMethod("fit_spm")
 ##' @param theta_st a \code{numeric} (named) vector containing the initial
 ##'     parameters.
 ##' @param nu a \code{numeric} value indicating either the \eqn{\nu}
-##'     paramater from the Matern covariance function (controlling the process
+##'     parameter from the Matern covariance function (controlling the process
 ##'     differentiability), or the "pexp" for the Powered Exponential family. If
 ##'     the \code{model} chosen by the user is Matern and \code{nu} is not
 ##'     informed, it is automatically set to .5. On the other hand, if the user
-##'     choses the Powered Exponential family and do not inform \code{nu},
+##'     chooses the Powered Exponential family and do not inform \code{nu},
 ##'     then it is set to 1. In both cases, the covariance function becomes the
-##'     so covalled exponential covariance function.
+##'     so called exponential covariance function.
 ##' @param tr tapper range
 ##' @param kappa \eqn{\kappa \in \{0, \ldots, 3 \}} parameter for the GW cov
 ##'     function.
 ##' @param mu2 the smoothness parameter \eqn{\mu} for the GW function.
-##' @param apply_exp a \code{logical} scalar indicating wheter the parameters
+##' @param apply_exp a \code{logical} scalar indicating whether the parameters
 ##'     that cannot assume negative values should be exponentiate or not.
 ##' @param opt_method a \code{character} scalar indicating the optimization
-##'     algorithm to be used. For details, see {optim}.
+##'     algorithm to be used. For details, see [stats::optim].
 ##' @param control_opt a named \code{list} containing the control arguments for
-##'     the optimization algorithm to be used. For details, see {optim}.
+##'     the optimization algorithm to be used. For details, see [stats::optim].
 ##' @param comp_hess a \code{boolean} indicating whether the Hessian matrix
 ##'     should be computed.
 ##' @param phi_min a \code{numeric} scalar representing the minimum \eqn{phi}
@@ -62,15 +62,14 @@ fit_spm <- function(x, ...) UseMethod("fit_spm")
 ##'     value to look for.
 ##' @param nphi a \code{numeric} scalar indicating the number of values to
 ##'     compute a grid-search over \eqn{phi}.
-##' @param ... additionnal parameters, either passed to \code{optim}.
+##' @param cores a \code{integer} scalar indicating number of cores to be used. Default is getOption("mc.cores"). No effect on Windows.
+##' @param ... additional parameters, either passed to [stats::optim].
 ##'
 ##' @import Matrix
 ##' 
 ##' @return a \code{spm_fit} object containing the information about the
 ##'     estimation of the model parameters.
 ##'
-##' @examples
-##' 
 ##' @examples
 ##'
 ##' data(liv_lsoa) ## loading the LSOA data
@@ -108,15 +107,15 @@ fit_spm.spm <- function(x, model, theta_st,
     stopifnot(!is.null(names(theta_st)))
     stopifnot(NCOL(x$var) == 1)
     stopifnot(inherits(x, "spm"))
-    if(! missing(nu))
+    if (! missing(nu))
         stopifnot(length(nu) == 1)
     stopifnot(model %in% c("matern", "pexp", "gaussian",
                            "spherical", "cs", "gw"))
-    if(model == "gw")
+    if (model == "gw")
         stopifnot(mu2 >= 1)
     npar <- length(theta_st)
     p    <- npar + 2L
-    if(npar == 2) {
+    if (npar == 2) {
         op_val <-
             stats::optim(par = theta_st,
                          fn  = singl_log_plik,
@@ -151,24 +150,24 @@ fit_spm.spm <- function(x, model, theta_st,
                          apply_exp = apply_exp,
                          ...)
     }
-    
+
     estimates <- op_val$par
-    
-    if(apply_exp) {
+
+    if (apply_exp) {
         estimates <- exp(estimates)
         ## Using Delta-Method
         ## https://stats.idre.ucla.edu/r/faq/how-can-i-estimate-the-standard-error-of-transformed-regression-parameters-in-r-using-the-delta-method/
         ## grad_mat <-
         ##     diag(c(1, exp(estimates[2:npar])))
         ## info_mat <- crossprod(grad_mat, info_mat) %*% grad_mat
-    } 
-    
+    }
+
     .n <- NROW(x$var)
-    
+
     ## can be turned in to a function to make to code cleaner
     switch(model,
            "matern" = {
-               if(is.null(nu))
+               if (is.null(nu))
                    nu <- .5
 
                V <- comp_mat_cov(x$dists,
@@ -178,7 +177,7 @@ fit_spm.spm <- function(x, model, theta_st,
                                  nu = nu)
            },
            "pexp" = {
-               if(is.null(nu))
+               if (is.null(nu))
                    nu <- 1
 
                V <- comp_pexp_cov(x$dists,
@@ -233,20 +232,19 @@ fit_spm.spm <- function(x, model, theta_st,
                    sparse = TRUE
                )
            })
-    
+
     ones_n <- matrix(rep(1, .n), ncol = 1L)
     y <- matrix(x$var, ncol = 1L)
 
-    if(npar == 2) {
-        V <- V + diag(estimates["nu"] / x$npix,
-                      nrow = .n, ncol = .n) 
+    if (npar == 2) {
+        V <- V + diag(estimates["al"] / x$npix,
+                      nrow = .n, ncol = .n)
         inv_v <- chol2inv(chol(V))
         mles <- est_mle(x$var, inv_v)
-        estimates <- c(mles, 
-                       "tausq" = unname(mles[length(mles)] *
-                                        estimates["nu"]),
-                       "phi"   = unname(estimates["phi"]))
-        if(comp_hess) {
+        estimates <- c(mles,
+                       "al" = unname(estimates["al"]),
+                       "phi" = unname(estimates["phi"]))
+        if (comp_hess) {
             info_mat <- solve(
                 numDeriv::hessian(func = singl_log_lik,
                                   x = estimates,
@@ -263,13 +261,12 @@ fit_spm.spm <- function(x, model, theta_st,
         } else {
             info_mat <- matrix(NA_real_, ncol = p, nrow = p)
         }
-        
-    } else if(npar == 1) {
+    } else if (npar == 1) {
         inv_v <- chol2inv(chol(V))
         mles  <- est_mle(x$var, inv_v)
-        estimates <- c(mles, 
+        estimates <- c(mles,
                        "phi" = unname(estimates["phi"]))
-        if(comp_hess) {
+        if (comp_hess) {
             ## stats::optimHess(par = estimates,
             ##                  fn  = singl_log_lik,
             info_mat <- solve(
@@ -291,7 +288,7 @@ fit_spm.spm <- function(x, model, theta_st,
                                nrow = length(estimates))
         }
     }
-    
+
     output <- list(
         estimate  = estimates,
         info_mat  = info_mat,
@@ -417,13 +414,13 @@ fit_spm.spm <- function(x, model, theta_st,
 ##' @title Summarizing \code{spm_fit}
 ##'
 ##' @description Provides a \code{data.frame} with point estimates and
-##'     confidence intervals for the paramters of the model fitted using the
+##'     confidence intervals for the parameters of the model fitted using the
 ##'     \code{spm_fit} function.
 ##' 
 ##' @param x a \code{spm_fit} object.
 ##' @param sig a real number between 0 and 1 indicating significance level to be
 ##'     used to compute the confidence intervals for the parameter estimates.
-##' @return a \code{data.frame} summarising the parameters estimated by the
+##' @return a \code{data.frame} summarizing the parameters estimated by the
 ##'     \code{fit_spm} function.
 ##' @export
 summary_spm_fit <- function(x, sig = .05) {
@@ -464,16 +461,17 @@ summary_spm_fit <- function(x, sig = .05) {
 fit_spm2 <- function(x, model, nu,
                      tr,
                      kappa = 1, mu2 = 1.5,
-                     comp_hess = TRUE, 
-                     phi_min, phi_max, nphi = 10) {
+                     comp_hess = TRUE,
+                     phi_min, phi_max, nphi = 10,
+                     cores = getOption("mc.cores", 1L)) {
     stopifnot(NCOL(x$var) == 1)
     stopifnot(inherits(x, "spm"))
     stopifnot(length(nphi) == 1)
     stopifnot(model %in% c("matern", "pexp", "gaussian",
                            "spherical", "cs", "gw"))
-    if(model == "gw")
+    if (model == "gw")
         stopifnot(mu2 >= 1)
-    if(! missing(nu))
+    if (! missing(nu))
         stopifnot(length(nu) == 1)
     
     my_phi <- seq(from = phi_min,
@@ -483,12 +481,23 @@ fit_spm2 <- function(x, model, nu,
     ## vector to store the profile likelihood value for each phi
     pl <- vector(mode = "numeric",
                  length = 2 * length(my_phi))
-
-    for( i in seq_along(my_phi) ) {
-        pl[i] <- singl_log_lik_nn(my_phi[i], .dt = x$var,
-                                  dists = x$dists, npix = 1,
-                                  model = model, nu = nu,
-                                  kappa = kappa, mu2 = mu2)
+    
+    if(.Platform$OS.type != "unix") {
+        for(i in seq_along(my_phi)) {
+            pl[i] <- singl_log_lik_nn(my_phi[i], .dt = x$var,
+                                      dists = x$dists, npix = 1,
+                                      model = model, nu = nu,
+                                      kappa = kappa, mu2 = mu2)
+        }
+    } else {
+        pl <- parallel::mclapply(my_phi,
+                                 FUN = singl_log_lik_nn,
+                                 .dt = x$var,
+                                 dists = x$dists, npix = 1,
+                                 model = model, nu = nu,
+                                 kappa = kappa, mu2 = mu2,
+                                 mc.cores = cores)
+        pl <- unlist(pl)         
     }
 
     k <- which.min(pl[seq_len(nphi)])
@@ -590,7 +599,7 @@ fit_spm2 <- function(x, model, nu,
 
     inv_v <- chol2inv(chol(V))
     mles <- est_mle(x$var, inv_v)
-    estimates <- c(mles, 
+    estimates <- c(mles,
                    "phi" = unname(phi_out))
 
     if(comp_hess) {

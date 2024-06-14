@@ -18,7 +18,7 @@ singl_log_lik(
 )
 }
 \arguments{
-\item{theta}{a \code{numeric} vector of size 4 (\eqn{\mu, \sigma^2, \tau^2,
+\item{theta}{a \code{numeric} vector of size 4 (\eqn{\mu, \sigma^2, \alpha,
 \phi}) containing the parameters associated with the model.}
 
 \item{.dt}{a \code{numeric} vector containing the variable \eqn{Y}.}
@@ -42,7 +42,7 @@ function.}
 
 \item{mu2}{the smoothness parameter \eqn{\mu} for the GW function.}
 
-\item{apply_exp}{a \code{logical} indicater wheter the exponential
+\item{apply_exp}{a \code{logical} indicating whether the exponential
 transformation should be applied to variance parameters. This
 facilitates the optimization process.}
 }
